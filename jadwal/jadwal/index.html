@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Study Scheduler</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 Study Scheduler</div>
+        <div class="nav-menu">
+            <span id="userName">User</span>
+            <button id="logoutBtn" class="btn-logout">Keluar</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <aside class="sidebar">
+            <button class="btn-new-schedule" id="newScheduleBtn">
+                <span>➕</span> Jadwal Baru
+            </button>
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active" data-view="all">
+                    <span>📅</span> Semua Jadwal
+                </a>
+                <a href="#" class="menu-item" data-view="today">
+                    <span>🌟</span> Hari Ini
+                </a>
+                <a href="#" class="menu-item" data-view="priority">
+                    <span>⚡</span> Prioritas Tinggi
+                </a>
+                <a href="#" class="menu-item" data-view="history">
+                    <span>📜</span> Riwayat
+                </a>
+            </div>
+            <div class="sidebar-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Total Jadwal</span>
+                    <span class="stat-value" id="totalSchedules">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Selesai</span>
+                    <span class="stat-value" id="completedSchedules">0</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="content-header">
+                <h2 id="viewTitle">Semua Jadwal</h2>
+                <div class="filter-group">
+                    <select id="priorityFilter" class="filter-select">
+                        <option value="all">Semua Prioritas</option>
+                        <option value="high">Tinggi</option>
+                        <option value="medium">Sedang</option>
+                        <option value="low">Rendah</option>
+                    </select>
+                    <input type="date" id="dateFilter" class="filter-date">
+                </div>
+            </div>
+
+            <div id="scheduleList" class="schedule-list">
+                <!-- Jadwal akan dimuat di sini -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Jadwal Baru/Edit -->
+    <div id="scheduleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Buat Jadwal Baru</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="scheduleForm" class="schedule-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subject">Mata Pelajaran</label>
+                        <input type="text" id="subject" required placeholder="Contoh: Matematika">
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Prioritas</label>
+                        <select id="priority" required>
+                            <option value="low">Rendah</option>
+                            <option value="medium" selected>Sedang</option>
+                            <option value="high">Tinggi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Deskripsi</label>
+                    <textarea id="description" rows="3" placeholder="Catatan atau detail tambahan..."></textarea>
+                </div>
+
+                <div class="form-section">
+                    <h4>⏰ Pengaturan Waktu</h4>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="multipleDateTime" style="width: auto;">
+                            <span>Buat jadwal berulang (banyak waktu sekaligus)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="singleDateTime" class="datetime-section">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="singleDate">Tanggal</label>
+                            <input type="date" id="singleDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="singleTimeStart">Waktu Mulai</label>
+                            <input type="time" id="singleTimeStart" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="singleTimeEnd">Waktu Selesai</label>
+                            <input type="time" id="singleTimeEnd" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="multipleDateTimeSection" class="datetime-section" style="display: none;">
+                    <div id="dateTimeSlots">
+                        <!-- Slot waktu akan ditambahkan di sini -->
+                    </div>
+                    <button type="button" id="addDateTimeSlot" class="btn-add-slot">
+                        ➕ Tambah Waktu
+                    </button>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Batal</button>
+                    <button type="submit" class="btn-primary" id="submitBtn">Simpan Jadwal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/schedule.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
