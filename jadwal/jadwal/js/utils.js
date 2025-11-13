@@ -8,7 +8,6 @@ function formatDate(dateString) {
         month: 'long', 
         day: 'numeric' 
     };
-    // ERROR 1: Akan crash jika dateString null/undefined
     return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
@@ -21,8 +20,7 @@ function formatTime(timeString) {
 function isToday(dateString) {
     const today = new Date();
     const date = new Date(dateString);
-    // ERROR 2: Method typo - akan throw error "toDateStrng is not a function"
-    return date.toDateStrng() === today.toDateString();
+    return date.toDateString() === today.toDateString();
 }
 
 // Check if date is in the past
@@ -48,6 +46,7 @@ function generateId() {
 
 // Custom Toast Notification
 function showNotification(message, type = 'success') {
+    // Remove existing toast if any
     const existingToast = document.querySelector('.toast');
     if (existingToast) {
         existingToast.remove();
@@ -135,7 +134,6 @@ function confirmAction(message, title = 'Konfirmasi', type = 'warning') {
 // Get current user
 function getCurrentUser() {
     const user = localStorage.getItem('currentUser');
-    // ERROR 3: Tidak ada try-catch, akan crash jika JSON invalid
     return user ? JSON.parse(user) : null;
 }
 
@@ -169,7 +167,6 @@ async function logout() {
 
 // Get user schedules
 function getUserSchedules(userId) {
-    // ERROR 4: Tidak ada try-catch untuk JSON.parse
     const allSchedules = JSON.parse(localStorage.getItem('schedules')) || [];
     return allSchedules.filter(s => s.userId === userId);
 }
@@ -211,15 +208,17 @@ function getScheduleById(scheduleId) {
 function filterSchedules(schedules, filters) {
     let filtered = [...schedules];
     
+    // Filter by priority
     if (filters.priority && filters.priority !== 'all') {
         filtered = filtered.filter(s => s.priority === filters.priority);
     }
     
+    // Filter by date
     if (filters.date) {
         filtered = filtered.filter(s => s.date === filters.date);
     }
     
-    // ERROR 5: Akan crash karena isToday() punya typo
+    // Filter by view
     if (filters.view === 'today') {
         filtered = filtered.filter(s => isToday(s.date));
     } else if (filters.view === 'priority') {
@@ -234,7 +233,6 @@ function filterSchedules(schedules, filters) {
 // Sort schedules by date and time
 function sortSchedules(schedules) {
     return schedules.sort((a, b) => {
-        // ERROR 6: Akan menghasilkan Invalid Date jika properti undefined
         const dateA = new Date(a.date + 'T' + a.timeStart);
         const dateB = new Date(b.date + 'T' + b.timeStart);
         return dateA - dateB;
@@ -249,7 +247,6 @@ function checkAndCompleteOverdueSchedules() {
     const schedules = getUserSchedules(user.id);
     let completedCount = 0;
     
-    // ERROR 7: forEach tidak bisa di-break, dan tidak handle error
     schedules.forEach(schedule => {
         if (!schedule.completed && isPast(schedule.date, schedule.timeEnd)) {
             updateSchedule(schedule.id, {
@@ -274,6 +271,6 @@ function backupSchedules() {
     link.href = URL.createObjectURL(blob);
     link.download = `schedules_backup_${new Date().toISOString().split('T')[0]}.json`;
     link.click();
-    // ERROR 8: Tidak revoke object URL, memory leak
     showNotification('Backup berhasil diunduh!', 'success');
+
 }
