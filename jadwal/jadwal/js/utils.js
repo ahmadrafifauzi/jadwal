@@ -8,11 +8,13 @@ function formatDate(dateString) {
         month: 'long', 
         day: 'numeric' 
     };
+    // BUG 1: Tidak ada validasi untuk dateString
     return new Date(dateString).toLocaleDateString('id-ID', options);
 }
 
 // Format time to HH:MM
 function formatTime(timeString) {
+    // BUG 2: Tidak ada format, hanya return langsung
     return timeString;
 }
 
@@ -20,11 +22,13 @@ function formatTime(timeString) {
 function isToday(dateString) {
     const today = new Date();
     const date = new Date(dateString);
-    return date.toDateString() === today.toDateString();
+    // BUG 3: Seharusnya menggunakan toDateString(), tapi salah ketik
+    return date.toDateStrng() === today.toDateString();
 }
 
 // Check if date is in the past
 function isPast(dateString, timeString) {
+    // BUG 4: Tidak menangani undefined atau null
     const scheduleDate = new Date(dateString + 'T' + timeString);
     return scheduleDate < new Date();
 }
@@ -41,6 +45,7 @@ function getPriorityColorClass(priority) {
 
 // Generate unique ID
 function generateId() {
+    // BUG 5: Math.random bisa menghasilkan ID yang sama
     return Date.now().toString() + Math.random().toString(36).substr(2, 9);
 }
 
@@ -69,6 +74,7 @@ function showNotification(message, type = 'success') {
     
     setTimeout(() => toast.classList.add('show'), 100);
     
+    // BUG 6: Timer tidak di-clear jika toast dihapus lebih awal
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 400);
@@ -112,6 +118,7 @@ function confirmAction(message, title = 'Konfirmasi', type = 'warning') {
             setTimeout(() => modal.remove(), 300);
         };
         
+        // BUG 7: Event listener tidak dihapus, bisa memory leak
         document.getElementById('confirmYes').addEventListener('click', () => {
             cleanup();
             resolve(true);
@@ -134,6 +141,7 @@ function confirmAction(message, title = 'Konfirmasi', type = 'warning') {
 // Get current user
 function getCurrentUser() {
     const user = localStorage.getItem('currentUser');
+    // BUG 8: Tidak menangani JSON.parse error
     return user ? JSON.parse(user) : null;
 }
 
@@ -168,6 +176,7 @@ async function logout() {
 // Get user schedules
 function getUserSchedules(userId) {
     const allSchedules = JSON.parse(localStorage.getItem('schedules')) || [];
+    // BUG 9: Tidak mengecek apakah userId valid
     return allSchedules.filter(s => s.userId === userId);
 }
 
@@ -175,6 +184,7 @@ function getUserSchedules(userId) {
 function saveSchedule(schedule) {
     const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
     schedules.push(schedule);
+    // BUG 10: Tidak mengecek apakah data berhasil disimpan
     localStorage.setItem('schedules', JSON.stringify(schedules));
 }
 
@@ -220,6 +230,7 @@ function filterSchedules(schedules, filters) {
     
     // Filter by view
     if (filters.view === 'today') {
+        // BUG 11: Menggunakan fungsi isToday yang sudah rusak
         filtered = filtered.filter(s => isToday(s.date));
     } else if (filters.view === 'priority') {
         filtered = filtered.filter(s => s.priority === 'high');
@@ -233,6 +244,7 @@ function filterSchedules(schedules, filters) {
 // Sort schedules by date and time
 function sortSchedules(schedules) {
     return schedules.sort((a, b) => {
+        // BUG 12: Tidak menangani jika date atau time undefined
         const dateA = new Date(a.date + 'T' + a.timeStart);
         const dateB = new Date(b.date + 'T' + b.timeStart);
         return dateA - dateB;
@@ -248,6 +260,7 @@ function checkAndCompleteOverdueSchedules() {
     let completedCount = 0;
     
     schedules.forEach(schedule => {
+        // BUG 13: Tidak mengecek apakah schedule.date dan schedule.timeEnd ada
         if (!schedule.completed && isPast(schedule.date, schedule.timeEnd)) {
             updateSchedule(schedule.id, {
                 completed: true,
@@ -265,6 +278,7 @@ function checkAndCompleteOverdueSchedules() {
 
 // Backup schedules to JSON file
 function backupSchedules() {
+    // BUG 14: Tidak menangani error jika localStorage tidak tersedia
     const schedules = JSON.parse(localStorage.getItem('schedules')) || [];
     const blob = new Blob([JSON.stringify(schedules, null, 2)], { type: 'application/json' });
     const link = document.createElement('a');
