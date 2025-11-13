@@ -1,20 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-<modelVersion>4.0.0</modelVersion>
-<groupId>com.capone.af</groupId>
-<artifactId>jadwal</artifactId>
-<packaging>war</packaging>
-<version>1.0-SNAPSHOT</version>
-<name>Jadwal</name>
-<url>https://github.com/ahmadrafifauzi/jadwal</url>
-<dependencies>
-<dependency>
-<groupId>junit</groupId>
-<artifactId>junit</artifactId>
-<version>3.8.1</version>
-<scope>test</scope>
-</dependency>
-</dependencies>
-<build>
-<finalName>MyWebApp</finalName>
-</build>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>ahmadrafiauzi</groupId>  <!-- Ubah ke groupId Anda -->
+    <artifactId>jadwal</artifactId>
+    <packaging>war</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Jadwal Web App</name>
+    <url>https://github.com/ahmadrafiauzi/jadwal</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>  <!-- Update ke versi terbaru untuk keamanan -->
+            <scope>test</scope>
+        </dependency>
+        <!-- Tambah jika perlu dependensi lain, misalnya untuk test JS (opsional) -->
+    </dependencies>
+
+    <build>
+        <finalName>jadwal</finalName>  <!-- Ubah dari MyWebApp ke nama proyek Anda -->
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>  <!-- Versi terbaru -->
+                <configuration>
+                    <warSourceDirectory>jadwal</warSourceDirectory>  <!-- Folder dengan HTML/CSS/JS Anda -->
+                    <failOnMissingWebXml>false</failOnMissingWebXml>  <!-- Tidak butuh web.xml untuk static app -->
+                </configuration>
+            </plugin>
+            <!-- Plugin untuk SonarCloud (opsional, tapi bantu analisis) -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>4.0.2.4116</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <!-- Config untuk SonarCloud agar analisis file web/JS -->
+        <sonar.sources>jadwal</sonar.sources>
+        <sonar.language>web,js</sonar.language>  <!-- Fokus ke HTML/JS/CSS -->
+    </properties>
 </project>
